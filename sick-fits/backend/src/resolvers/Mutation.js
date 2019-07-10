@@ -1,4 +1,4 @@
-const mutations = {
+const Mutations = {
   async createItem(parent, args, ctx, info) {
     // check they are logged in
     const item = await ctx.db.mutation.createItem(
@@ -11,10 +11,20 @@ const mutations = {
     );
 
     return item;
+  },
+  updateItem(parent, args, ctx, info) {
+    const updates = { ...args };
+    delete updates.id;
+    return ctx.db.mutation.updateItem(
+      {
+        data: updates,
+        where: {
+          id: args.id
+        }
+      },
+      info
+    );
   }
-  //   createDog(parent, args, ctx, info) {
-  //     console.log(args);
-  //   }
 };
 
-module.exports = mutations;
+module.exports = Mutations;
