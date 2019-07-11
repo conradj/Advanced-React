@@ -6,9 +6,10 @@ const Query = {
   itemsConnection: forwardTo("db"),
   me(parent, args, ctx, info) {
     if (!ctx.request.userId) {
+      console.log("hello");
       return null;
     }
-
+    console.log("sadasda");
     return ctx.db.query.user({ where: { id: ctx.request.userId } }, info);
   }
 };

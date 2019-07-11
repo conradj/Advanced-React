@@ -53,6 +53,23 @@ const Mutations = {
       maxAge: 1000 * 60 * 60 * 24 * 365 // 1 year
     });
     return user;
+  },
+  async signin(parent, { email, password }, ctx, info) {
+    const user = await ctx.db.query.user({ where: { email } });
+    if (!user) {
+      throw new Error(`No user registered with email ${email}`);
+    }
+
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      throw new Error(`Password is incorrect for that account`);
+    }
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+    ctx.response.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365 // 1 year
+    });
+    return user;
   }
 };
 
